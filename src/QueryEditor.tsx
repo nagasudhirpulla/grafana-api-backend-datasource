@@ -1,5 +1,5 @@
 import { QueryEditorProps } from '@grafana/data';
-import { CodeEditor, InlineFieldRow, InlineLabel } from '@grafana/ui';
+import { CodeEditor, InlineFieldRow, InlineLabel, Input } from '@grafana/ui';
 import { defaults } from 'lodash';
 import React, { PureComponent } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -15,12 +15,20 @@ export class QueryEditor extends PureComponent<Props>{
     const { onChange, query } = this.props;
     onChange({ ...query, payload: value });
   };
+  onAliasChange: React.FormEventHandler<HTMLInputElement> = (ev) => {
+    const { onChange, query } = this.props;
+    onChange({ ...query, alias: ev.currentTarget.value });
+  };
 
   render() {
     const query = defaults(this.props.query, defaultQuery);
-    const { payload } = query;
+    const { payload, alias } = query;
     return (
       <>
+        <InlineFieldRow>
+          <InlineLabel tooltip="If left blank, the field uses the name of the queried element.">Alias</InlineLabel>
+          <Input width={12} value={alias} onChange={this.onAliasChange} />
+        </InlineFieldRow>
         <InlineFieldRow>
           <AutoSizer disableHeight>
             {({ width }) => (
