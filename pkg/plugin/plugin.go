@@ -36,8 +36,8 @@ func NewDataSourceInstance(setting backend.DataSourceInstanceSettings) (instance
 	}
 
 	return &TestDataSource{
-		httpClient: client,
-		baseUrl:    setting.URL,
+		HttpClient: client,
+		BaseUrl:    setting.URL,
 	}, nil
 }
 
@@ -46,18 +46,17 @@ func (s *TestDataSource) Dispose() {
 }
 
 type TestDataSource struct {
-	httpClient *http.Client
-	baseUrl    string
+	HttpClient *http.Client
+	BaseUrl    string
 }
 
 func (ds *TestDataSource) CheckHealth(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
-	// call the /test URL of the datasource
 	log.DefaultLogger.Info("CheckHealth called", "request", req)
 
 	var status = backend.HealthStatusOk
 	var message = "Data source is working"
 
-	resp, err := ds.httpClient.Get(ds.baseUrl)
+	resp, err := ds.HttpClient.Get(ds.BaseUrl)
 	if err != nil {
 		status = backend.HealthStatusError
 		message = "Unable to connect to datasource via get request"
@@ -87,30 +86,60 @@ func (ds *TestDataSource) QueryData(ctx context.Context, req *backend.QueryDataR
 	return resp, nil
 }
 
+type ApiRespSeries struct {
+	Name   string
+	Labels map[string]string
+	Values []float64
+}
+
+type ApiResponse struct {
+	Data []ApiRespSeries
+}
+
 func (ds *TestDataSource) query(_ context.Context, pCtx backend.PluginContext, query backend.DataQuery) backend.DataResponse {
 	response := backend.DataResponse{}
 
-	// create data frame response.
+	// create data frame response
 	postBody, err := json.Marshal(query)
 	if err != nil {
+		log.DefaultLogger.Error("post request json marshal error", "error", err)
 		return response
 	}
-	_, e := ds.httpClient.Post(ds.baseUrl, "application/json", bytes.NewBuffer(postBody))
+
+	resp, e := ds.HttpClient.Post(ds.BaseUrl, "application/json", bytes.NewBuffer(postBody))
 	if e != nil {
+		log.DefaultLogger.Error("post request error", "error", err)
+		return response
+	} else if resp.StatusCode != 200 {
 		return response
 	}
+
+	var respData ApiResponse
+	er := json.NewDecoder(resp.Body).Decode(&respData)
+	if er != nil {
+		log.DefaultLogger.Error("api response decoding error", "error", er)
+		return response
+	}
+	// log.DefaultLogger.Info("api response received", "api response", respData)
 	frame := data.NewFrame("response")
 
-	// convert time to unix epoch and vice-versa - https://stackoverflow.com/questions/43915900/how-to-convert-unix-time-to-time-time-in-golang
-
-	// add fields.
-	frame.Fields = append(frame.Fields,
-		data.NewField("time", nil, []time.Time{query.TimeRange.From, query.TimeRange.To}),
-		data.NewField("values", nil, []int64{10, 20}),
-	)
+	for _, seriesData := range respData.Data {
+		if seriesData.Name == "time" {
+			var timeVals []time.Time
+			for _, t := range seriesData.Values {
+				timeVals = append(timeVals, time.UnixMilli(int64(t)))
+			}
+			frame.Fields = append(frame.Fields,
+				data.NewField(seriesData.Name, nil, timeVals),
+			)
+		} else {
+			frame.Fields = append(frame.Fields,
+				data.NewField(seriesData.Name, nil, seriesData.Values),
+			)
+		}
+	}
 
 	// add the frames to the response.
 	response.Frames = append(response.Frames, frame)
-
 	return response
 }

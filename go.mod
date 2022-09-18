@@ -1,4 +1,4 @@
-module github.com/grafana/grafana-starter-datasource-backend
+module github.com/nagasudhirpulla/grafana-api-backend-datasource
 
 go 1.16
 
