@@ -1,44 +1,31 @@
-# Grafana Data Source Backend Plugin Template
+# Grafana API Backend Datasource Plugin
 
-[![Build](https://github.com/grafana/grafana-starter-datasource-backend/workflows/CI/badge.svg)](https://github.com/grafana/grafana-datasource-backend/actions?query=workflow%3A%22CI%22)
+This is a Grafana Data Source Backend Plugin for getting data from HTTP API
 
-This template is a starting point for building Grafana Data Source Backend Plugins
-
-## What is Grafana Data Source Backend Plugin?
-
-Grafana supports a wide range of data sources, including Prometheus, MySQL, and even Datadog. There’s a good chance you can already visualize metrics from the systems you have set up. In some cases, though, you already have an in-house metrics solution that you’d like to add to your Grafana dashboards. Grafana Data Source Plugins enables integrating such solutions with Grafana.
-
-For more information about backend plugins, refer to the documentation on [Backend plugins](https://grafana.com/docs/grafana/latest/developers/plugins/backend/).
-
-## Getting started
+Documentation on [Backend plugins](https://grafana.com/docs/grafana/latest/developers/plugins/backend/).
 
 A data source backend plugin consists of both frontend and backend components.
 
+## Pre-requisites for plugin development
+
+### For Back-end
+* Install Go
+* Install Mage
+* Install Go extension in VS code (optional)
+
+### For Front-end
+* Install node
+* Install yarn
+
+## Setting up the development environment
+
 ### Frontend
 
-1. Install dependencies
+1. Install dependencies with ```yarn install```
 
-   ```bash
-   yarn install
-   ```
+2. Build plugin in development mode or run in watch mode with ```yarn dev``` or ```yarn watch```
 
-2. Build plugin in development mode or run in watch mode
-
-   ```bash
-   yarn dev
-   ```
-
-   or
-
-   ```bash
-   yarn watch
-   ```
-
-3. Build plugin in production mode
-
-   ```bash
-   yarn build
-   ```
+3. Build plugin in production mode with ```yarn build```
 
 ### Backend
 
@@ -49,17 +36,9 @@ A data source backend plugin consists of both frontend and backend components.
    go mod tidy
    ```
 
-2. Build backend plugin binaries for Linux, Windows and Darwin:
+2. Build backend plugin binaries for Linux, Windows and Darwin with ```mage -v``` or ```mage -v build:windows``` for building only for windows
 
-   ```bash
-   mage -v
-   ```
-
-3. List all available Mage targets for additional commands:
-
-   ```bash
-   mage -l
-   ```
+3. List all available Mage targets for additional commands using ```mage -l```
 
 ## Learn more
 
