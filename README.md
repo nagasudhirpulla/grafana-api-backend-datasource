@@ -15,7 +15,7 @@ A data source backend plugin consists of both frontend and backend components.
 
 ### For Front-end
 * Install node
-* Install yarn
+* Install yarn (```npm install --global yarn```)
 
 ## Setting up the development environment
 
@@ -39,6 +39,8 @@ A data source backend plugin consists of both frontend and backend components.
 2. Build backend plugin binaries for Linux, Windows and Darwin with ```mage -v``` or ```mage -v build:windows``` for building only for windows
 
 3. List all available Mage targets for additional commands using ```mage -l```
+
+4. Test for backend datasource located at `plugin_test.go`. Test can be run easily in vs code with GO VS code extension installed
 
 ## Learn more
 
