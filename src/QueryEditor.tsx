@@ -1,14 +1,13 @@
 import { QueryEditorProps } from '@grafana/data';
-import { CodeEditor, InlineFieldRow, InlineLabel, Input } from '@grafana/ui';
-import { defaults } from 'lodash';
+import { InlineFieldRow, InlineLabel, Input, Switch } from '@grafana/ui';
+import { defaults, get as lodashGet, setWith as lodashSetWith } from 'lodash';
 import React, { PureComponent } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import { DataSource } from './datasource';
-
 import { DataSourceOptions, GrafanaQuery, defaultQuery } from './types';
+// import { ObjectSchema } from 'react-schema-based-json-editor';
+import { JSONSchema7 } from 'json-schema'
 
 type Props = QueryEditorProps<DataSource, GrafanaQuery, DataSourceOptions>;
-
 
 export class QueryEditor extends PureComponent<Props>{
   onPayloadChange = (value: string) => {
@@ -20,33 +19,81 @@ export class QueryEditor extends PureComponent<Props>{
     onChange({ ...query, alias: ev.currentTarget.value });
   };
 
+  iterateSchema = (s: JSONSchema7, propTree: string[] = [], titleTree: string[], compList: JSX.Element[] = []) => {
+    let payloadStr = this.props.query.payload;
+    // console.log(this.props.datasource.schema)
+    const payload: object = (() => {
+      try {
+        return JSON.parse(payloadStr)
+      } catch (_) { return {} }
+    })()
+
+    for (const objKey in s.properties) {
+      // rejection criteria start
+      if (!s.properties.hasOwnProperty(objKey)) { continue }
+
+      const sProperty = s.properties[objKey];
+      if (typeof sProperty === "boolean") { continue }
+
+      const propType = sProperty.type
+      if (typeof propType !== "string") { continue }
+      // rejection criteria end
+
+      const propVal = lodashGet(payload, [...propTree, objKey], sProperty.default)
+      const propLabel = sProperty.title ?? objKey
+      const onPayloadChange = this.onPayloadChange;
+
+      if (propType === "number" || propType === "integer" || propType === "string") {
+        const el = <InlineFieldRow>
+          <InlineLabel tooltip={sProperty.description}>{[...titleTree, propLabel].join('.')}</InlineLabel>
+          <Input width={12} value={propVal}
+            onChange={function (e) {
+              let valueOk = true
+              // console.log(payload)
+              let newVal: string | number = e.currentTarget.value
+              if (propType === "number") {
+                newVal = parseFloat(newVal)
+                valueOk = !isNaN(newVal)
+              }
+              else if (propType === "integer") {
+                newVal = parseInt(newVal, 10)
+                valueOk = !isNaN(newVal)
+              }
+              // console.log(newObj)
+              if (valueOk) {
+                const newObj = lodashSetWith(payload, [...propTree, objKey], newVal, Object)
+                onPayloadChange(JSON.stringify(newObj))
+              }
+            }} />
+        </InlineFieldRow>
+        compList.push(el)
+      }
+      if (propType === "boolean") {
+        const el = <InlineFieldRow>
+          <InlineLabel tooltip={sProperty.description}>{[...titleTree, propLabel].join('.')}</InlineLabel>
+          <Switch value={propVal}
+            onChange={(e) => {
+              const newObj = lodashSetWith(payload, [...propTree, objKey], e.currentTarget.checked, Object)
+              onPayloadChange(JSON.stringify(newObj))
+            }} />
+        </InlineFieldRow>
+        compList.push(el)
+      }
+    }
+    return compList;
+  }
+
   render() {
     const query = defaults(this.props.query, defaultQuery);
-    const { payload, alias } = query;
+    const { alias } = query;
+    const schema = this.props.datasource.schema ?? {}
     return (
       <>
         <InlineFieldRow>
           <InlineLabel tooltip="If left blank, the field uses the name of the queried element.">Alias</InlineLabel>
           <Input width={12} value={alias} onChange={this.onAliasChange} />
         </InlineFieldRow>
-        <InlineFieldRow>
-          <AutoSizer disableHeight>
-            {({ width }) => (
-              <div style={{ width: width + 'px' }}>
-                <InlineLabel>Payload</InlineLabel>
-                <CodeEditor
-                  width="100%"
-                  height="200px"
-                  language="json"
-                  showLineNumbers={true}
-                  showMiniMap={payload.length > 100}
-                  value={payload}
-                  onBlur={(value: string) => this.onPayloadChange(value)}
-                />
-              </div>
-            )}
-          </AutoSizer>
-        </InlineFieldRow>
+        <>{this.iterateSchema(schema, [], [], [])}</>
       </>
     )
   }

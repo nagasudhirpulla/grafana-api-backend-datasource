@@ -17,6 +17,7 @@
         "@grafana/runtime": "latest",
         "@grafana/toolkit": "latest",
         "@grafana/ui": "latest",
+        "@types/json-schema": "^7.0.11",
         "@types/lodash": "latest",
         "@types/react-virtualized-auto-sizer": "^1.0.1",
         "react-virtualized-auto-sizer": "^1.0.6"

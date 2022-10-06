@@ -64,7 +64,7 @@ func (ds *TestDataSource) CheckHealth(ctx context.Context, req *backend.CheckHea
 		status = backend.HealthStatusError
 		message = "datasource responded with status code " + strconv.Itoa(resp.StatusCode) + "instead of 200"
 	}
-
+	// TODO check if JSON schema format is ok
 	return &backend.CheckHealthResult{
 		Status:  status,
 		Message: message,

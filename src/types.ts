@@ -26,6 +26,7 @@ export interface MySecureJsonData {
 
 import { DataQuery, DataQueryRequest, DataSourceJsonData, MetricFindValue, VariableModel } from '@grafana/data';
 import { TemplateSrv as GrafanaTemplateSrv } from '@grafana/runtime';
+import { JSONSchema7 } from 'json-schema';
 
 declare module '@grafana/runtime' {
   export interface TemplateSrv extends GrafanaTemplateSrv {
@@ -33,7 +34,9 @@ declare module '@grafana/runtime' {
   }
 }
 
-export interface DataSourceOptions extends DataSourceJsonData { }
+export interface DataSourceOptions extends DataSourceJsonData {
+  schema?: JSONSchema7;
+}
 
 export interface QueryRequest extends DataQueryRequest<GrafanaQuery> {
   adhocFilters?: any[];
