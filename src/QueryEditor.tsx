@@ -1,5 +1,5 @@
 import { QueryEditorProps } from '@grafana/data';
-import { InlineFieldRow, InlineLabel, Input, Switch } from '@grafana/ui';
+import { InlineFieldRow, InlineLabel, Input, Select, Switch } from '@grafana/ui';
 import { defaults, get as lodashGet, setWith as lodashSetWith } from 'lodash';
 import React, { PureComponent } from 'react';
 import { DataSource } from './datasource';
@@ -41,9 +41,30 @@ export class QueryEditor extends PureComponent<Props>{
 
       const propVal = lodashGet(payload, [...propTree, objKey], sProperty.default)
       const propLabel = sProperty.title ?? objKey
-      const onPayloadChange = this.onPayloadChange;
-
-      if (propType === "number" || propType === "integer" || propType === "string") {
+      const onPayloadChange = this.onPayloadChange
+      const isPropEnum: boolean = sProperty.hasOwnProperty("enum")
+      if (isPropEnum) {
+        if (["number", "string", "integer"].indexOf(propType) === -1) { continue }
+        const propOpts = sProperty.enum;
+        if (!Array.isArray(propOpts)) { continue }
+        var selOpts = propOpts.map((v) => {
+          let val: string | number = (propType === "string") ? `${v}` : parseFloat(`${v}`)
+          return { label: "" + v, value: val }
+        });
+        const el = <InlineFieldRow>
+          <InlineLabel tooltip={sProperty.description}>{[...titleTree, propLabel].join('.')}</InlineLabel>
+          <Select
+            options={selOpts}
+            value={propVal}
+            onChange={(v) => {
+              const newObj = lodashSetWith(payload, [...propTree, objKey], v.value, Object)
+              onPayloadChange(JSON.stringify(newObj))
+            }}
+          />
+        </InlineFieldRow>
+        compList.push(el)
+      }
+      else if (propType === "number" || propType === "integer" || propType === "string") {
         const el = <InlineFieldRow>
           <InlineLabel tooltip={sProperty.description}>{[...titleTree, propLabel].join('.')}</InlineLabel>
           <Input width={12} value={propVal}
@@ -68,7 +89,7 @@ export class QueryEditor extends PureComponent<Props>{
         </InlineFieldRow>
         compList.push(el)
       }
-      if (propType === "boolean") {
+      else if (propType === "boolean") {
         const el = <InlineFieldRow>
           <InlineLabel tooltip={sProperty.description}>{[...titleTree, propLabel].join('.')}</InlineLabel>
           <Switch value={propVal}
