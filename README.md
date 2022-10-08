@@ -81,7 +81,7 @@
     "JSON": {
         "refId": "A",
         "alias": "abcd",
-        "payload": "{\"booleanExample\":false,\"enumExample\":\"enum 1\",\"measId\":\"xsdjg\",\"fetchCached\":true}",
+        "payload": "{\"fetchCached\":true,\"measId\":\"abcd\",\"samplingType\":\"snap\",\"samplingSecs\":60}",
         "bucketAggs": [
             {
                 "field": "@timestamp",
@@ -111,8 +111,8 @@
 ```json
 {
 	"data":[
-		{"name": "time", "values": [1665216413748, 1665219977028], "labels": None},
-		{"name": "abcd", "values": [5, 10], "labels": None}
+		{"name": "time", "values": [1665216413748, 1665219977028], "labels": null},
+		{"name": "abcd", "values": [5, 10], "labels": null}
 	]
 }
 ```
