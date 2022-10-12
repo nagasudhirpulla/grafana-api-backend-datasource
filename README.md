@@ -110,9 +110,13 @@
 * A sample API response can be like 
 ```json
 {
-	"data":[
-		{"name": "time", "values": [1665216413748, 1665219977028], "labels": null},
-		{"name": "abcd", "values": [5, 10], "labels": null}
+	"frames":[
+		{
+			"columns":[
+				{"name": "@timestamp", "values": [1665216413748, 1665219977028], "labels": null},
+				{"name": "abcd", "values": [5, 10], "labels": null}
+			]
+		}
 	]
 }
 ```
@@ -184,3 +188,4 @@ mage -v build:windows
 - [Grafana Tutorials](https://grafana.com/tutorials/) - Grafana Tutorials are step-by-step guides that help you make the most of Grafana
 - [Grafana UI Library](https://developers.grafana.com/ui) - UI components to help you build interfaces using Grafana Design System
 - [Grafana plugin SDK for Go](https://grafana.com/docs/grafana/latest/developers/plugins/backend/grafana-plugin-sdk-for-go/)
+- [Docs on Grafana Dataframe datastructure](https://grafana.com/docs/grafana/latest/developers/plugins/data-frames/#the-data-frame)

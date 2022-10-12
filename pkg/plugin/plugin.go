@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -86,14 +87,18 @@ func (ds *TestDataSource) QueryData(ctx context.Context, req *backend.QueryDataR
 	return resp, nil
 }
 
-type ApiRespSeries struct {
+type ApiRespColumn struct {
 	Name   string
 	Labels map[string]string
 	Values []float64
 }
 
+type ApiRespFrame struct {
+	Columns []ApiRespColumn
+}
+
 type ApiResponse struct {
-	Data []ApiRespSeries
+	Frames []ApiRespFrame
 }
 
 func (ds *TestDataSource) query(_ context.Context, pCtx backend.PluginContext, query backend.DataQuery) backend.DataResponse {
@@ -121,25 +126,27 @@ func (ds *TestDataSource) query(_ context.Context, pCtx backend.PluginContext, q
 		return response
 	}
 	// log.DefaultLogger.Info("api response received", "api response", respData)
-	frame := data.NewFrame("response")
 
-	for _, seriesData := range respData.Data {
-		if seriesData.Name == "time" {
-			var timeVals []time.Time
-			for _, t := range seriesData.Values {
-				timeVals = append(timeVals, time.UnixMilli(int64(t)))
+	for fItr, respFrame := range respData.Frames {
+		frame := data.NewFrame(fmt.Sprintf("frame_%d", fItr))
+		for _, respCol := range respFrame.Columns {
+			if respCol.Name == "@timestamp" {
+				var timeVals []time.Time
+				for _, t := range respCol.Values {
+					timeVals = append(timeVals, time.UnixMilli(int64(t)))
+				}
+				frame.Fields = append(frame.Fields,
+					data.NewField(respCol.Name, nil, timeVals),
+				)
+			} else {
+				frame.Fields = append(frame.Fields,
+					data.NewField(respCol.Name, nil, respCol.Values),
+				)
 			}
-			frame.Fields = append(frame.Fields,
-				data.NewField(seriesData.Name, nil, timeVals),
-			)
-		} else {
-			frame.Fields = append(frame.Fields,
-				data.NewField(seriesData.Name, nil, seriesData.Values),
-			)
 		}
+		response.Frames = append(response.Frames, frame)
 	}
 
 	// add the frames to the response.
-	response.Frames = append(response.Frames, frame)
 	return response
 }
