@@ -6,7 +6,7 @@
     "metrics": true,
     "backend": true,
     "alerting": true,
-    "executable": "gpx_api-backend-datasource_windows_amd64.exe",
+    "executable": "gpx_nagasudhir-api-datasource",
     "info": {
         "description": "",
         "author": {

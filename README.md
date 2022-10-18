@@ -184,6 +184,7 @@ mage -v build:windows
 
 - Documentation on [Backend plugins](https://grafana.com/docs/grafana/latest/developers/plugins/backend/)
 - [Build a data source backend plugin tutorial](https://grafana.com/tutorials/build-a-data-source-backend-plugin)
+- [Grafana backend datasource template project on GitHub](https://github.com/grafana/grafana-starter-datasource-backend)
 - [Grafana documentation](https://grafana.com/docs/)
 - [Grafana Tutorials](https://grafana.com/tutorials/) - Grafana Tutorials are step-by-step guides that help you make the most of Grafana
 - [Grafana UI Library](https://developers.grafana.com/ui) - UI components to help you build interfaces using Grafana Design System

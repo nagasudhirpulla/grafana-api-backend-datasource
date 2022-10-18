@@ -33,7 +33,7 @@ export const ConfigEditor: ComponentType<Props> = ({ options, onOptionsChange })
                 height="200px"
                 language="json"
                 showLineNumbers={true}
-                showMiniMap={schemaStr.length > 100}
+                showMiniMap={(schemaStr??"").length > 100}
                 value={schemaStr}
                 onBlur={(txt: string) => {
                   const schema: JSONSchema7 = (() => {

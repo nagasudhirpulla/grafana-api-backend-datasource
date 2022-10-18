@@ -47,7 +47,7 @@ export class QueryEditor extends PureComponent<Props>{
         if (["number", "string", "integer"].indexOf(propType) === -1) { continue }
         const propOpts = sProperty.enum;
         if (!Array.isArray(propOpts)) { continue }
-        var selOpts = propOpts.map((v) => {
+        let selOpts = propOpts.map((v) => {
           let val: string | number = (propType === "string") ? `${v}` : parseFloat(`${v}`)
           return { label: "" + v, value: val }
         });
