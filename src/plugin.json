@@ -2,11 +2,11 @@
     "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
     "type": "datasource",
     "name": "api-backend",
-    "id": "nagasudhir-api-datasource",
+    "id": "nagasudhirpulla-api-datasource",
     "metrics": true,
     "backend": true,
     "alerting": true,
-    "executable": "gpx_nagasudhir-api-datasource",
+    "executable": "gpx_nagasudhirpulla-api-datasource",
     "info": {
         "description": "",
         "author": {
@@ -32,15 +32,15 @@
         ],
         "screenshots": [{
                 "name": "Plugin Settings",
-                "path": "https://github.com/nagasudhirpulla/grafana-api-backend-datasource/raw/main/readme-img/plugin-settings-example.png"
+                "path": "img/plugin-settings-example.png"
             },
             {
                 "name": "Query Editor",
-                "path": "https://github.com/nagasudhirpulla/grafana-api-backend-datasource/raw/main/readme-img/query-editor-example.png"
+                "path": "img/query-editor-example.png"
             },
             {
                 "name": "Query Payload",
-                "path": "https://github.com/nagasudhirpulla/grafana-api-backend-datasource/raw/main/readme-img/query-inspector-payload-example.png"
+                "path": "img/query-inspector-payload-example.png"
             }
         ],
         "version": "%VERSION%",
