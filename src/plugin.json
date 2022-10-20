@@ -13,7 +13,10 @@
             "name": "Nagasudhir",
             "url": "https://github.com/nagasudhirpulla"
         },
-        "keywords": ["backend datasource", "api"],
+        "keywords": [
+            "backend datasource",
+            "api"
+        ],
         "logos": {
             "small": "img/logo.svg",
             "large": "img/logo.svg"
@@ -27,7 +30,19 @@
                 "url": "https://github.com/grafana/grafana-starter-datasource-backend/blob/master/LICENSE"
             }
         ],
-        "screenshots": [],
+        "screenshots": [{
+                "name": "Plugin Settings",
+                "path": "https://github.com/nagasudhirpulla/grafana-api-backend-datasource/raw/main/readme-img/plugin-settings-example.png"
+            },
+            {
+                "name": "Query Editor",
+                "path": "https://github.com/nagasudhirpulla/grafana-api-backend-datasource/raw/main/readme-img/query-editor-example.png"
+            },
+            {
+                "name": "Query Payload",
+                "path": "https://github.com/nagasudhirpulla/grafana-api-backend-datasource/raw/main/readme-img/query-inspector-payload-example.png"
+            }
+        ],
         "version": "%VERSION%",
         "updated": "%TODAY%"
     },
