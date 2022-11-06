@@ -9,7 +9,7 @@
 * Download the plugin from https://github.com/nagasudhirpulla/grafana-api-backend-datasource/releases/
 * unzip and paste the folder in the data/plugins folder of Grafana installation
 * Restart Grafana  
-* A data source by the name `api-backend` should appear
+* A data source by the name `JSON Fetcher` should appear
 
 ## Create JSON schema for query payload
 * You can generate JSON schema from example query payload JSON [here](https://easy-json-schema.github.io/) 
@@ -98,7 +98,7 @@
                 "type": "date_histogram"
             }
         ],
-        "datasource": "api-backend",
+        "datasource": "JSON Fetcher",
         "datasourceId": 10,
         "intervalMs": 60000,
         "maxDataPoints": 974,

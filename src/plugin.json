@@ -1,7 +1,7 @@
 {
     "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
     "type": "datasource",
-    "name": "api-backend",
+    "name": "JSON Fetcher",
     "id": "nagasudhirpulla-api-datasource",
     "metrics": true,
     "backend": true,
@@ -47,7 +47,7 @@
         "updated": "%TODAY%"
     },
     "dependencies": {
-        "grafanaDependency": ">=7.0.0",
+        "grafanaDependency": ">=8.0.5",
         "plugins": []
     }
 }
