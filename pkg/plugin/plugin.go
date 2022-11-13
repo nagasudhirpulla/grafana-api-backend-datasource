@@ -52,7 +52,7 @@ type TestDataSource struct {
 }
 
 func (ds *TestDataSource) CheckHealth(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
-	log.DefaultLogger.Info("CheckHealth called", "request", req)
+	// log.DefaultLogger.Info("CheckHealth called", "request", req)
 
 	var status = backend.HealthStatusOk
 	var message = "Data source is working"
@@ -61,9 +61,9 @@ func (ds *TestDataSource) CheckHealth(ctx context.Context, req *backend.CheckHea
 	if err != nil {
 		status = backend.HealthStatusError
 		message = "Unable to connect to datasource via get request"
-	} else if resp.StatusCode != 200 {
+	} else if resp.StatusCode != 200 && resp.StatusCode != 202 && resp.StatusCode != 204 {
 		status = backend.HealthStatusError
-		message = "datasource responded with status code " + strconv.Itoa(resp.StatusCode) + "instead of 200"
+		message = "datasource responded with status code " + strconv.Itoa(resp.StatusCode) + "instead of 200/202/204"
 	}
 	// TODO check if JSON schema format is ok
 	return &backend.CheckHealthResult{
@@ -74,7 +74,7 @@ func (ds *TestDataSource) CheckHealth(ctx context.Context, req *backend.CheckHea
 
 func (ds *TestDataSource) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	resp := backend.NewQueryDataResponse()
-	log.DefaultLogger.Info("Query Data called", "Request", req)
+	// log.DefaultLogger.Info("Query Data called", "Request", req)
 	// loop over queries and execute them individually.
 	for _, q := range req.Queries {
 		res := ds.query(ctx, req.PluginContext, q)
