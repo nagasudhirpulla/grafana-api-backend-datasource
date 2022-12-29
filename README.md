@@ -1,4 +1,4 @@
-# <img src="src/img/logo.svg" alt="logo.svg" width="50px" height="50px"/> Grafana API Backend Datasource Plugin
+# Grafana API Backend Datasource Plugin
 
 * This is a Grafana Data Source Plugin for getting data from HTTP API
 * User inputs in the query editor can be customized by setting JSON schema in the datasource configuration page
