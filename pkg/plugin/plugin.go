@@ -65,6 +65,8 @@ func (ds *TestDataSource) CheckHealth(ctx context.Context, req *backend.CheckHea
 		status = backend.HealthStatusError
 		message = "datasource responded with status code " + strconv.Itoa(resp.StatusCode) + "instead of 200/202/204"
 	}
+	// closing the response after function exit
+	defer resp.Body.Close()
 	// TODO check if JSON schema format is ok
 	return &backend.CheckHealthResult{
 		Status:  status,
@@ -114,11 +116,14 @@ func (ds *TestDataSource) query(_ context.Context, pCtx backend.PluginContext, q
 	resp, e := ds.HttpClient.Post(ds.BaseUrl, "application/json", bytes.NewBuffer(postBody))
 	if e != nil {
 		log.DefaultLogger.Error("post request error", "error", err)
+		defer resp.Body.Close()
 		return response
 	} else if resp.StatusCode != 200 {
+		defer resp.Body.Close()
 		return response
 	}
 
+	defer resp.Body.Close()
 	var respData ApiResponse
 	er := json.NewDecoder(resp.Body).Decode(&respData)
 	if er != nil {
